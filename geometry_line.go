@@ -75,27 +75,12 @@ func (ln Line) Segment(length float64) Line {
 
 // IsPointOnLine tests if the Point is on the Line.
 func (ln Line) IsPointOnLine(p Point) bool {
-	if ln.IsHorizontal() {
-		return ln.From.Y == p.Y
-	}
-	if ln.IsVertical() {
-		return ln.From.X == p.X
-	}
-
-	// diagonal
-	slope := ln.Slope()
-	yIntercept := ln.From.Y - slope*ln.From.X
-	expectedY := slope*p.X + yIntercept
-
-	return math.Round(p.Y) == math.Round(expectedY)
+	return isPointOnLine(ln, p, false)
 }
 
 // IsPointOnSegment tests if the Point is on the Line segment.
 func (ln Line) IsPointOnSegment(p Point) bool {
-	if !ln.Rect().IsContainsPoint(p) {
-		return false
-	}
-	return ln.IsPointOnLine(p)
+	return isPointOnLine(ln, p, true)
 }
 
 // LinesIntersection returns the crossing Point of two Lines.

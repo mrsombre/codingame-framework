@@ -39,3 +39,22 @@ func linesIntersection(a, b Line, s1, s2 bool) (Point, bool) {
 		Y: a.From.Y + t*av.Y,
 	}, true
 }
+
+func isPointOnLine(ln Line, point Point, s bool) bool {
+	lv := ln.Vector()
+	pv := point.Sub(ln.From)
+
+	pcp := lv.X*pv.Y - lv.Y*pv.X
+	if pcp != 0 {
+		return false
+	}
+
+	if s {
+		dp := pv.X*lv.X + pv.Y*lv.Y
+		l := lv.X*lv.X + lv.Y*lv.Y
+
+		return dp >= 0 && dp <= l
+	}
+
+	return true
+}
