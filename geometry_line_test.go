@@ -221,6 +221,14 @@ func TestLine_IsPointOnLine(t *testing.T) {
 	}
 }
 
+func BenchmarkLine_IsPointOnLine(b *testing.B) {
+	line := Line{Point{0, 0}, Point{300, 300}}
+	point := Point{150, 150}
+	for i := 0; i < b.N; i++ {
+		line.IsPointOnLine(point)
+	}
+}
+
 func TestLine_IsPointOnSegment(t *testing.T) {
 	tests := []struct {
 		name string
