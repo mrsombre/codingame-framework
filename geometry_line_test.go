@@ -20,6 +20,91 @@ func TestLine_Length(t *testing.T) {
 	assert.EqualValues(t, 500, line.Length())
 }
 
+func TestLine_Vector(t *testing.T) {
+	var ln Line
+	ln = Line{Point{200, 250}, Point{300, 300}}
+	assert.Equal(t, Point{100, 50}, ln.Vector())
+	ln = Line{Point{300, 300}, Point{200, 250}}
+	assert.Equal(t, Point{-100, -50}, ln.Vector())
+}
+
+func TestLine_Slope(t *testing.T) {
+	tests := []struct {
+		name string
+		line Line
+		want float64
+	}{
+		{
+			name: `horizontal left to right`,
+			line: Line{Point{0, 0}, Point{300, 0}},
+			want: 0,
+		},
+		{
+			name: `horizontal right to left`,
+			line: Line{Point{300, 0}, Point{0, 0}},
+			want: 0,
+		},
+		{
+			name: `vertical bottom to top`,
+			line: Line{Point{0, 0}, Point{0, 300}},
+			want: math.Inf(1),
+		},
+		{
+			name: `vertical top to bottom`,
+			line: Line{Point{0, 300}, Point{0, 0}},
+			want: math.Inf(-1),
+		},
+		{
+			name: `diagonal ascending`,
+			line: Line{Point{0, 0}, Point{300, 300}},
+			want: 1,
+		},
+		{
+			name: `diagonal descending`,
+			line: Line{Point{0, 300}, Point{300, 0}},
+			want: -1,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.want, tc.line.Slope())
+		})
+	}
+}
+
+func TestLine_CrossProduct(t *testing.T) {
+	var ln Line
+	ln = Line{Point{200, 200}, Point{300, 300}}
+	assert.EqualValues(t, 0, ln.CrossProduct())
+	ln = Line{Point{100, 200}, Point{300, 400}}
+	assert.EqualValues(t, -20000, ln.CrossProduct())
+}
+
+func TestLine_IsHorizontal(t *testing.T) {
+	var ln Line
+	ln = Line{Point{0, 0}, Point{300, 0}}
+	assert.True(t, ln.IsHorizontal())
+	ln = Line{Point{0, 0}, Point{0, 300}}
+	assert.False(t, ln.IsHorizontal())
+}
+
+func TestLine_IsVertical(t *testing.T) {
+	var ln Line
+	ln = Line{Point{0, 0}, Point{0, 300}}
+	assert.True(t, ln.IsVertical())
+	ln = Line{Point{0, 0}, Point{300, 0}}
+	assert.False(t, ln.IsVertical())
+}
+
+func TestLine_IsMoving(t *testing.T) {
+	var ln Line
+	ln = Line{Point{0, 0}, Point{300, 400}}
+	assert.True(t, ln.IsMoving())
+	ln = Line{Point{300, 400}, Point{300, 400}}
+	assert.False(t, ln.IsMoving())
+}
+
 func TestLine_Segment(t *testing.T) {
 	tests := []struct {
 		name   string
@@ -80,83 +165,6 @@ func TestLine_Segment(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			assert.Equal(t, tc.want, tc.line.Segment(tc.length))
-		})
-	}
-}
-
-func TestLine_IsMoving(t *testing.T) {
-	var ln Line
-	ln = Line{Point{0, 0}, Point{300, 400}}
-	assert.True(t, ln.IsMoving())
-	ln = Line{Point{300, 400}, Point{300, 400}}
-	assert.False(t, ln.IsMoving())
-}
-
-func TestLine_Vector(t *testing.T) {
-	var ln Line
-	ln = Line{Point{200, 250}, Point{300, 300}}
-	assert.Equal(t, Point{100, 50}, ln.Vector())
-	ln = Line{Point{300, 300}, Point{200, 250}}
-	assert.Equal(t, Point{-100, -50}, ln.Vector())
-}
-
-func TestLine_IsHorizontal(t *testing.T) {
-	var ln Line
-	ln = Line{Point{0, 0}, Point{300, 0}}
-	assert.True(t, ln.IsHorizontal())
-	ln = Line{Point{0, 0}, Point{0, 300}}
-	assert.False(t, ln.IsHorizontal())
-}
-
-func TestLine_IsVertical(t *testing.T) {
-	var ln Line
-	ln = Line{Point{0, 0}, Point{0, 300}}
-	assert.True(t, ln.IsVertical())
-	ln = Line{Point{0, 0}, Point{300, 0}}
-	assert.False(t, ln.IsVertical())
-}
-
-func TestLine_Slope(t *testing.T) {
-	tests := []struct {
-		name string
-		line Line
-		want float64
-	}{
-		{
-			name: `horizontal left to right`,
-			line: Line{Point{0, 0}, Point{300, 0}},
-			want: 0,
-		},
-		{
-			name: `horizontal right to left`,
-			line: Line{Point{300, 0}, Point{0, 0}},
-			want: 0,
-		},
-		{
-			name: `vertical bottom to top`,
-			line: Line{Point{0, 0}, Point{0, 300}},
-			want: math.Inf(1),
-		},
-		{
-			name: `vertical top to bottom`,
-			line: Line{Point{0, 300}, Point{0, 0}},
-			want: math.Inf(-1),
-		},
-		{
-			name: `diagonal ascending`,
-			line: Line{Point{0, 0}, Point{300, 300}},
-			want: 1,
-		},
-		{
-			name: `diagonal descending`,
-			line: Line{Point{0, 300}, Point{300, 0}},
-			want: -1,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.Slope())
 		})
 	}
 }

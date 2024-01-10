@@ -96,12 +96,12 @@ func (p Point) DistanceChebyshev(t Point) float64 {
 
 // DistanceToXBound returns the distance between the Point and the field bound of specified width.
 func (p Point) DistanceToXBound(bound float64) float64 {
-	return DistanceToBound(p.X, bound)
+	return distanceToBound(p.X, bound)
 }
 
 // DistanceToYBound returns the distance between the Point and the field bound of specified height.
 func (p Point) DistanceToYBound(bound float64) float64 {
-	return DistanceToBound(p.Y, bound)
+	return distanceToBound(p.Y, bound)
 }
 
 // NeighborsCross returns the neighbors of the Point in the cross shape.
