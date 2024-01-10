@@ -26,7 +26,7 @@ func (ln Line) Segment(length float64) Line {
 		return Line{ln.From, ln.From}
 	}
 
-	v := ln.Direction()
+	v := ln.Vector()
 	vl := ln.Length()
 	ux := v.X / vl
 	uy := v.Y / vl
@@ -45,8 +45,8 @@ func (ln Line) IsMoving() bool {
 	return !ln.From.IsSame(ln.To)
 }
 
-// Direction returns the direction of the Line.
-func (ln Line) Direction() Point {
+// Vector returns the direction of the Line.
+func (ln Line) Vector() Point {
 	return ln.To.Sub(ln.From)
 }
 
@@ -160,7 +160,7 @@ func (ln Line) LineSegmentIntersection(tl Line) (Point, bool) {
 func (ln Line) Rotate(angle float64) Line {
 	radians := angle * math.Pi / 180
 
-	v := ln.Direction()
+	v := ln.Vector()
 	rx := v.X*math.Cos(radians) + v.Y*math.Sin(radians)
 	ry := v.X*-math.Sin(radians) + v.Y*math.Cos(radians)
 
@@ -169,8 +169,8 @@ func (ln Line) Rotate(angle float64) Line {
 
 // IsCollision tests whether a moving object collides with another moving object within a given radius.
 func (ln Line) IsCollision(tl Line, radius float64) bool {
-	tv := tl.Direction()
-	lv := ln.Direction()
+	tv := tl.Vector()
+	lv := ln.Vector()
 	dx := tl.From.Sub(ln.From)
 	vx2 := tv.X - lv.X
 	vy2 := tv.Y - lv.Y

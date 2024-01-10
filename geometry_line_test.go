@@ -8,30 +8,11 @@ import (
 )
 
 func TestLine_IsSame(t *testing.T) {
-	tests := []struct {
-		name string
-		a, b Line
-		want bool
-	}{
-		{
-			name: `true`,
-			a:    Line{Point{0, 0}, Point{300, 400}},
-			b:    Line{Point{0, 0}, Point{300, 400}},
-			want: true,
-		},
-		{
-			name: `false`,
-			a:    Line{Point{0, 0}, Point{300, 400}},
-			b:    Line{Point{300, 400}, Point{0, 0}},
-			want: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.a.IsSame(tc.b))
-		})
-	}
+	var ln Line
+	ln = Line{Point{0, 0}, Point{300, 400}}
+	assert.True(t, ln.IsSame(Line{Point{0, 0}, Point{300, 400}}))
+	ln = Line{Point{0, 0}, Point{300, 400}}
+	assert.False(t, ln.IsSame(Line{Point{300, 400}, Point{0, 0}}))
 }
 
 func TestLine_Length(t *testing.T) {
@@ -104,103 +85,35 @@ func TestLine_Segment(t *testing.T) {
 }
 
 func TestLine_IsMoving(t *testing.T) {
-	tests := []struct {
-		name string
-		line Line
-		want bool
-	}{
-		{
-			name: `true`,
-			line: Line{Point{0, 0}, Point{300, 400}},
-			want: true,
-		},
-		{
-			name: `false`,
-			line: Line{Point{0, 0}, Point{0, 0}},
-			want: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.IsMoving())
-		})
-	}
+	var ln Line
+	ln = Line{Point{0, 0}, Point{300, 400}}
+	assert.True(t, ln.IsMoving())
+	ln = Line{Point{300, 400}, Point{300, 400}}
+	assert.False(t, ln.IsMoving())
 }
 
-func TestLine_Direction(t *testing.T) {
-	tests := []struct {
-		name string
-		line Line
-		want Point
-	}{
-		{
-			name: `positive`,
-			line: Line{Point{100, 100}, Point{200, 200}},
-			want: Point{100, 100},
-		},
-		{
-			name: `negative`,
-			line: Line{Point{200, 200}, Point{100, 100}},
-			want: Point{-100, -100},
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.Direction())
-		})
-	}
+func TestLine_Vector(t *testing.T) {
+	var ln Line
+	ln = Line{Point{200, 250}, Point{300, 300}}
+	assert.Equal(t, Point{100, 50}, ln.Vector())
+	ln = Line{Point{300, 300}, Point{200, 250}}
+	assert.Equal(t, Point{-100, -50}, ln.Vector())
 }
 
 func TestLine_IsHorizontal(t *testing.T) {
-	tests := []struct {
-		name string
-		line Line
-		want bool
-	}{
-		{
-			name: `true`,
-			line: Line{Point{0, 0}, Point{300, 0}},
-			want: true,
-		},
-		{
-			name: `false`,
-			line: Line{Point{0, 0}, Point{300, 400}},
-			want: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.IsHorizontal())
-		})
-	}
+	var ln Line
+	ln = Line{Point{0, 0}, Point{300, 0}}
+	assert.True(t, ln.IsHorizontal())
+	ln = Line{Point{0, 0}, Point{0, 300}}
+	assert.False(t, ln.IsHorizontal())
 }
 
 func TestLine_IsVertical(t *testing.T) {
-	tests := []struct {
-		name string
-		line Line
-		want bool
-	}{
-		{
-			name: `true`,
-			line: Line{Point{0, 0}, Point{0, 300}},
-			want: true,
-		},
-		{
-			name: `false`,
-			line: Line{Point{0, 0}, Point{300, 400}},
-			want: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.IsVertical())
-		})
-	}
+	var ln Line
+	ln = Line{Point{0, 0}, Point{0, 300}}
+	assert.True(t, ln.IsVertical())
+	ln = Line{Point{0, 0}, Point{300, 0}}
+	assert.False(t, ln.IsVertical())
 }
 
 func TestLine_Slope(t *testing.T) {
@@ -346,7 +259,7 @@ func TestLine_IsPointOnSegment(t *testing.T) {
 	}
 }
 
-func TestLine_LinesIntersectionPoint(t *testing.T) {
+func TestLine_LinesIntersection(t *testing.T) {
 	tests := []struct {
 		name string
 		a, b Line
@@ -434,7 +347,7 @@ func TestLine_LinesIntersectionPoint(t *testing.T) {
 	}
 }
 
-func TestLine_SegmentsIntersectionPoint(t *testing.T) {
+func TestLine_SegmentsIntersection(t *testing.T) {
 	tests := []struct {
 		name string
 		a, b Line
@@ -527,7 +440,7 @@ func TestLine_LineSegmentIntersection(t *testing.T) {
 	}
 }
 
-func TestLine_RotateLine(t *testing.T) {
+func TestLine_Rotate(t *testing.T) {
 	tests := []struct {
 		name  string
 		line  Line
