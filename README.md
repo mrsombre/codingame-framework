@@ -15,3 +15,9 @@ Currently, the framework is written in Golang 1.19.x as it is closer to 1.18.x a
 ```shell
 go test -cover ./...
 ```
+
+### Benchmarks
+
+```shell
+go test -bench=. -benchmem -run=^$ > bench.out
+```

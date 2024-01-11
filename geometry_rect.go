@@ -38,6 +38,15 @@ func (r Rect) Center() Point {
 	)
 }
 
+func (r Rect) Symmetric(width, height float64) Rect {
+	return Rect{
+		Xf: width - r.Xf,
+		Xt: width - r.Xt,
+		Yf: height - r.Yf,
+		Yt: height - r.Yt,
+	}
+}
+
 // IsContainsPoint tests if the Rect contains the Point.
 func (r Rect) IsContainsPoint(c Point) bool {
 	return c.X >= r.Xf && c.X <= r.Xt && c.Y >= r.Yf && c.Y <= r.Yt
@@ -46,6 +55,49 @@ func (r Rect) IsContainsPoint(c Point) bool {
 // IsContainsRectangle tests if the Rect contains the other Rect.
 func (r Rect) IsContainsRectangle(t Rect) bool {
 	return r.Xf <= t.Xf && r.Xt >= t.Xt && r.Yf <= t.Yf && r.Yt >= t.Yt
+}
+
+// IsIntersectsRect tests if the Rect intersects the other Rect.
+func (r Rect) IsIntersectsRect(t Rect) bool {
+	return !(r.Xt < t.Xf || r.Xf > t.Xt || r.Yt < t.Yf || r.Yf > t.Yt)
+}
+
+// RectsIntersection returns the intersection Rect of two Rects.
+func (r Rect) RectsIntersection(t Rect) (Rect, bool) {
+	if !r.IsIntersectsRect(t) {
+		return Rect{}, false
+	}
+
+	ir := NewRectangle(
+		math.Max(r.Xf, t.Xf),
+		math.Min(r.Xt, t.Xt),
+		math.Max(r.Yf, t.Yf),
+		math.Min(r.Yt, t.Yt),
+	)
+	if ir.Width() == 0 || ir.Height() == 0 {
+		return Rect{}, false
+	}
+
+	return ir, true
+}
+
+func (r Rect) Vertices() Points {
+	return Points{
+		topLeft0:     {r.Xf, r.Yt},
+		topRight0:    {r.Xt, r.Yt},
+		bottomRight0: {r.Xt, r.Yf},
+		bottomLeft0:  {r.Xf, r.Yf},
+	}
+}
+
+// Edges returns the Lines edges of the Rect.
+func (r Rect) Edges() Lines {
+	return Lines{
+		top:    {Point{r.Xf, r.Yt}, Point{r.Xt, r.Yt}},
+		right:  {Point{r.Xt, r.Yf}, Point{r.Xt, r.Yt}},
+		bottom: {Point{r.Xf, r.Yf}, Point{r.Xt, r.Yf}},
+		left:   {Point{r.Xf, r.Yf}, Point{r.Xf, r.Yt}},
+	}
 }
 
 func (r Rect) String() string {

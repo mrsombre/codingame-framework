@@ -29,6 +29,12 @@ func TestPoint_Index(t *testing.T) {
 			want:  0,
 		},
 		{
+			name:  `last in row`,
+			p:     Point{9, 0},
+			width: 10,
+			want:  9,
+		},
+		{
 			name:  `next row`,
 			p:     Point{0, 1},
 			width: 10,

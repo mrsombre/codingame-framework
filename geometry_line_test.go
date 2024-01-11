@@ -221,14 +221,6 @@ func TestLine_IsPointOnLine(t *testing.T) {
 	}
 }
 
-func BenchmarkLine_IsPointOnLine(b *testing.B) {
-	line := Line{Point{0, 0}, Point{300, 300}}
-	point := Point{150, 150}
-	for i := 0; i < b.N; i++ {
-		line.IsPointOnLine(point)
-	}
-}
-
 func TestLine_IsPointOnSegment(t *testing.T) {
 	tests := []struct {
 		name string
@@ -600,4 +592,16 @@ func TestLine_String(t *testing.T) {
 func TestNewLine(t *testing.T) {
 	ln := NewLine(Point{0, 0}, Point{300, 400})
 	assert.Equal(t, Line{Point{0, 0}, Point{300, 400}}, ln)
+}
+
+// Benchmarks
+
+func BenchmarkLine_IsCollision(b *testing.B) {
+	r := false
+	al := Line{Point{0, 0}, Point{600, 800}}
+	bl := Line{Point{300, 400}, Point{150, 200}}
+	for i := 0; i < b.N; i++ {
+		r = al.IsCollision(bl, 50)
+	}
+	GlobalB = r
 }
