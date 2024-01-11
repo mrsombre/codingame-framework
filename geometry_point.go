@@ -17,6 +17,12 @@ const (
 	topRight    = 5
 	bottomRight = 6
 	bottomLeft  = 7
+
+	// 0-corners
+	topLeft0     = 0
+	topRight0    = 1
+	bottomRight0 = 2
+	bottomLeft0  = 3
 )
 
 // Point represents a point in a 2D plane.
