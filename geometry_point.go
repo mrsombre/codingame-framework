@@ -36,26 +36,41 @@ func (p Point) IsSame(t Point) bool {
 }
 
 // Index returns the 0-index of the Point in a field of specified width.
-func (p Point) Index(width int) int {
-	if p.X < 0 || p.X >= float64(width) || p.Y < 0 {
-		panic(fmt.Sprintf("point %s is out of bound %d", p, width))
+func (p Point) Index(width float64) int {
+	if p.X < 0 || p.X >= width || p.Y < 0 {
+		panic(fmt.Sprintf("point %s is out of bound %.f", p, width))
 	}
-	return int(p.Y)*width + int(p.X)
+	return int(p.Y*width + p.X)
 }
 
-// IsInXBound tests if the Point is in the positive bound by X axis.
+// IsInXRange tests if the Point is in the range by X axis.
+func (p Point) IsInXRange(from, to float64) bool {
+	return p.X >= from && p.X <= to
+}
+
+// IsInXBound tests if the Point is in the field defined by width.
 func (p Point) IsInXBound(width float64) bool {
-	return p.X >= 0 && p.X <= width
+	return p.X >= 0 && p.X < width
 }
 
-// IsInYBound tests if the Point is in the positive bound by Y axis.
+// IsInYRange tests if the Point is in the range by Y axis.
+func (p Point) IsInYRange(from, to float64) bool {
+	return p.Y >= from && p.Y <= to
+}
+
+// IsInYBound tests if the Point is in the field defined by height.
 func (p Point) IsInYBound(height float64) bool {
-	return p.Y >= 0 && p.Y <= height
+	return p.Y >= 0 && p.Y < height
+}
+
+// IsInRange tests if the Point is in the range by X and Y axis.
+func (p Point) IsInRange(from, to float64) bool {
+	return p.X >= from && p.X <= to && p.Y >= from && p.Y <= to
 }
 
 // IsInBound tests if the Point is in the positive bound by X and Y axis.
 func (p Point) IsInBound(width, height float64) bool {
-	return p.IsInXBound(width) && p.IsInYBound(height)
+	return p.X >= 0 && p.X < width && p.Y >= 0 && p.Y < height
 }
 
 // SymmetricX returns the symmetric Point by X axis.
@@ -85,7 +100,9 @@ func (p Point) Sub(t Point) Point {
 
 // Distance returns the distance between two Points using the Pythagorean theorem.
 func (p Point) Distance(t Point) float64 {
-	return math.Sqrt(math.Pow(p.X-t.X, 2) + math.Pow(p.Y-t.Y, 2))
+	x := p.X - t.X
+	y := p.Y - t.Y
+	return math.Sqrt(x*x + y*y)
 }
 
 // DistanceManhattan returns the Manhattan distance between two Points.
@@ -98,6 +115,31 @@ func (p Point) DistanceManhattan(t Point) float64 {
 // https://en.wikipedia.org/wiki/Chebyshev_distance
 func (p Point) DistanceChebyshev(t Point) float64 {
 	return math.Max(math.Abs(p.X-t.X), math.Abs(p.Y-t.Y))
+}
+
+// SquareLength returns the square length of the Point vector.
+func (p Point) SquareLength() float64 {
+	return p.X*p.X + p.Y*p.Y
+}
+
+// DotProduct returns the dot product of two Points vectors.
+func (p Point) DotProduct(t Point) float64 {
+	return p.X*t.X + p.Y*t.Y
+}
+
+// CrossProduct returns the cross product of two Points vectors.
+func (p Point) CrossProduct(t Point) float64 {
+	return p.X*t.Y - p.Y*t.X
+}
+
+// Normalize returns the normalized Point vector of specified length.
+func (p Point) Normalize(length float64) Point {
+	return Point{p.X / length, p.Y / length}
+}
+
+// distanceToBound returns the distance between x and the expected bound.
+func distanceToBound(x, bound float64) float64 {
+	return math.Min(x, bound-x)
 }
 
 // DistanceToXBound returns the distance between the Point and the field bound of specified width.

@@ -2,8 +2,9 @@ goos: linux
 goarch: amd64
 pkg: github.com/mrsombre/codingame-framework
 cpu: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
-BenchmarkLine_IsCollision-8         	271175239	         4.403 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLine_LinesIntersection-8   	351207843	         3.375 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLine_IsPointOnLine-8       	515632399	         2.412 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIsPointOnLine     	531822363	         2.250 ns/op	       0 B/op	       0 allocs/op
+BenchmarkClosestPoint      	100000000	        10.82 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLinesIntersection 	353300368	         3.435 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLine_IsCollision  	273297457	         4.427 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	github.com/mrsombre/codingame-framework	4.666s
+ok  	github.com/mrsombre/codingame-framework	5.733s

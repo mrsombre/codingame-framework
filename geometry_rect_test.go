@@ -50,33 +50,32 @@ func TestRect_IsContainsPoint(t *testing.T) {
 func TestRect_IsContainsRectangle(t *testing.T) {
 	tests := []struct {
 		name string
-		r    Rect
-		t    Rect
+		a, b Rect
 		want bool
 	}{
 		{
 			name: `true`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{120, 180, 320, 380},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{120, 180, 320, 380},
 			want: true,
 		},
 		{
 			name: `false`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{150, 250, 350, 450},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{150, 250, 350, 450},
 			want: false,
 		},
 		{
 			name: `same`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{100, 200, 300, 400},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{100, 200, 300, 400},
 			want: true,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.r.IsContainsRectangle(tc.t))
+			assert.Equal(t, tc.want, tc.a.IsContainsRectangle(tc.b))
 		})
 	}
 }
@@ -84,39 +83,38 @@ func TestRect_IsContainsRectangle(t *testing.T) {
 func TestRect_IsIntersectsRect(t *testing.T) {
 	tests := []struct {
 		name string
-		r    Rect
-		t    Rect
+		a, b Rect
 		want bool
 	}{
 		{
 			name: `true`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{150, 250, 350, 450},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{150, 250, 350, 450},
 			want: true,
 		},
 		{
 			name: `false`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{300, 400, 500, 600},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{300, 400, 500, 600},
 			want: false,
 		},
 		{
 			name: `same`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{100, 200, 300, 400},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{100, 200, 300, 400},
 			want: true,
 		},
 		{
 			name: `inside`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{120, 180, 320, 380},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{120, 180, 320, 380},
 			want: true,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.r.IsIntersectsRect(tc.t))
+			assert.Equal(t, tc.want, tc.a.IsIntersectsRect(tc.b))
 		})
 	}
 }
@@ -124,62 +122,61 @@ func TestRect_IsIntersectsRect(t *testing.T) {
 func TestRect_RectsIntersection(t *testing.T) {
 	tests := []struct {
 		name string
-		r    Rect
-		t    Rect
+		a, b Rect
 		want Rect
 		ok   bool
 	}{
 		{
 			name: `true`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{150, 250, 350, 450},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{150, 250, 350, 450},
 			want: Rect{150, 200, 350, 400},
 			ok:   true,
 		},
 		{
 			name: `false`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{300, 400, 500, 600},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{300, 400, 500, 600},
 			ok:   false,
 		},
 		{
 			name: `same`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{100, 200, 300, 400},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{100, 200, 300, 400},
 			want: Rect{100, 200, 300, 400},
 			ok:   true,
 		},
 		{
 			name: `second>first`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{120, 180, 320, 380},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{120, 180, 320, 380},
 			want: Rect{120, 180, 320, 380},
 			ok:   true,
 		},
 		{
 			name: `first>second`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{80, 220, 280, 420},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{80, 220, 280, 420},
 			want: Rect{100, 200, 300, 400},
 			ok:   true,
 		},
 		{
 			name: `line`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{200, 300, 300, 400},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{200, 300, 300, 400},
 			ok:   false,
 		},
 		{
 			name: `point`,
-			r:    Rect{100, 200, 300, 400},
-			t:    Rect{200, 300, 200, 300},
+			a:    Rect{100, 200, 300, 400},
+			b:    Rect{200, 300, 200, 300},
 			ok:   false,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got, ok := tc.r.RectsIntersection(tc.t)
+			got, ok := tc.a.RectsIntersection(tc.b)
 			assert.Equal(t, tc.ok, ok)
 			assert.Equal(t, tc.want, got)
 		})

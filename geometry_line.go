@@ -58,44 +58,117 @@ func (ln Line) Segment(length float64) Line {
 	if length == 0 {
 		return Line{ln.From, ln.From}
 	}
-
-	v := ln.Vector()
-	vl := ln.Length()
-	ux := v.X / vl
-	uy := v.Y / vl
+	nv := ln.Vector().Normalize(ln.Length())
 
 	return Line{
 		ln.From,
 		NewPoint(
-			ln.From.X+ux*length,
-			ln.From.Y+uy*length,
+			ln.From.X+nv.X*length,
+			ln.From.Y+nv.Y*length,
 		),
 	}
 }
 
+// isPointOnLine tests if the Point is on the Line or Line segment.
+func isPointOnLine(line Line, point Point, isSegment bool) bool {
+	lv := line.Vector()
+	pv := point.Sub(line.From)
+
+	pcp := lv.CrossProduct(pv)
+	if pcp != 0 {
+		return false
+	}
+
+	if isSegment {
+		dp := pv.DotProduct(lv)
+		return dp >= 0 && dp <= lv.SquareLength()
+	}
+
+	return true
+}
+
 // IsPointOnLine tests if the Point is on the Line.
-func (ln Line) IsPointOnLine(p Point) bool {
-	return isPointOnLine(ln, p, false)
+func (ln Line) IsPointOnLine(t Point) bool {
+	return isPointOnLine(ln, t, false)
 }
 
 // IsPointOnSegment tests if the Point is on the Line segment.
-func (ln Line) IsPointOnSegment(p Point) bool {
-	return isPointOnLine(ln, p, true)
+func (ln Line) IsPointOnSegment(t Point) bool {
+	return isPointOnLine(ln, t, true)
+}
+
+// closestPoint returns the closest Point on the Line or Line segment to the given Point.
+func closestPoint(line Line, point Point, isSegment bool) Point {
+	nv := line.Vector().Normalize(line.Length())
+	dp := point.Sub(line.From).DotProduct(nv)
+
+	if isSegment {
+		if dp <= 0 {
+			return line.From
+		}
+		if dp >= line.Length() {
+			return line.To
+		}
+	}
+
+	return NewPoint(
+		line.From.X+nv.X*dp,
+		line.From.Y+nv.Y*dp,
+	)
+}
+
+// ClosestPointToLine returns the closest Point on the Line.
+func (ln Line) ClosestPointToLine(t Point) Point {
+	return closestPoint(ln, t, false)
+}
+
+// ClosestPointToSegment returns the closest Point on the Line segment.
+func (ln Line) ClosestPointToSegment(t Point) Point {
+	return closestPoint(ln, t, true)
+}
+
+// linesIntersection returns the intersection point of two Lines or Line segments.
+func linesIntersection(lineA, lineB Line, isSegmentA, isSegmentB bool) (Point, bool) {
+	av := lineA.Vector()
+	bv := lineB.Vector()
+
+	vcp := av.CrossProduct(bv)
+	if vcp == 0 {
+		return Point{}, false
+	}
+
+	sv := lineB.From.Sub(lineA.From)
+	acp := sv.CrossProduct(av)
+	bcp := sv.CrossProduct(bv)
+	t := bcp / vcp
+	u := acp / vcp
+
+	if isSegmentA && (t < 0 || t > 1) {
+		return Point{}, false
+	}
+	if isSegmentB && (u < 0 || u > 1) {
+		return Point{}, false
+	}
+
+	return Point{
+		X: lineA.From.X + t*av.X,
+		Y: lineA.From.Y + t*av.Y,
+	}, true
 }
 
 // LinesIntersection returns the crossing Point of two Lines.
-func (ln Line) LinesIntersection(tl Line) (Point, bool) {
-	return linesIntersection(ln, tl, false, false)
+func (ln Line) LinesIntersection(t Line) (Point, bool) {
+	return linesIntersection(ln, t, false, false)
 }
 
 // SegmentsIntersection returns the crossing Point of two Line segments.
-func (ln Line) SegmentsIntersection(tl Line) (Point, bool) {
-	return linesIntersection(ln, tl, true, true)
+func (ln Line) SegmentsIntersection(t Line) (Point, bool) {
+	return linesIntersection(ln, t, true, true)
 }
 
 // LineSegmentIntersection returns the crossing Point of the Line and the Line segment.
-func (ln Line) LineSegmentIntersection(tl Line) (Point, bool) {
-	return linesIntersection(ln, tl, false, true)
+func (ln Line) LineSegmentIntersection(t Line) (Point, bool) {
+	return linesIntersection(ln, t, false, true)
 }
 
 // Rotate returns the Line rotated by the given angle.
@@ -110,26 +183,24 @@ func (ln Line) Rotate(angle float64) Line {
 }
 
 // IsCollision tests whether a moving object collides with another moving object within a given radius.
-func (ln Line) IsCollision(tl Line, radius float64) bool {
-	tv := tl.Vector()
-	lv := ln.Vector()
-	dx := tl.From.Sub(ln.From)
-	vx := tv.Sub(lv)
+func (ln Line) IsCollision(t Line, radius float64) bool {
+	vx := t.Vector().Sub(ln.Vector())
+	dx := t.From.Sub(ln.From)
 
-	a := vx.X*vx.X + vx.Y*vx.Y
+	a := vx.SquareLength()
 	if a <= 0 {
 		return false
 	}
 
-	b := 2 * (dx.X*vx.X + dx.Y*vx.Y)
-	c := dx.X*dx.X + dx.Y*dx.Y - radius*radius
+	b := 2 * dx.DotProduct(vx)
+	c := dx.SquareLength() - radius*radius
 	d := b*b - 4*a*c
 	if d < 0 {
 		return false
 	}
 
-	t := (-b - math.Sqrt(d)) / (2 * a)
-	if t <= 0 || t > 1 {
+	tc := (-b - math.Sqrt(d)) / (2 * a)
+	if tc <= 0 || tc > 1 {
 		return false
 	}
 

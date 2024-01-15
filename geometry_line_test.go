@@ -16,8 +16,11 @@ func TestLine_IsSame(t *testing.T) {
 }
 
 func TestLine_Length(t *testing.T) {
-	line := NewLine(Point{0, 0}, Point{300, 400})
-	assert.EqualValues(t, 500, line.Length())
+	var ln Line
+	ln = NewLine(Point{0, 0}, Point{300, 400})
+	assert.EqualValues(t, 500, ln.Length())
+	ln = NewLine(Point{300, 400}, Point{-300, -400})
+	assert.EqualValues(t, 1000, ln.Length())
 }
 
 func TestLine_Vector(t *testing.T) {
@@ -171,98 +174,166 @@ func TestLine_Segment(t *testing.T) {
 
 func TestLine_IsPointOnLine(t *testing.T) {
 	tests := []struct {
-		name string
-		line Line
-		p    Point
-		want bool
+		name  string
+		line  Line
+		point Point
+		want  bool
 	}{
 		{
-			name: `horizontal`,
-			line: Line{Point{0, 0}, Point{300, 0}},
-			p:    Point{150, 0},
-			want: true,
+			name:  `horizontal`,
+			line:  Line{Point{0, 0}, Point{300, 0}},
+			point: Point{150, 0},
+			want:  true,
 		},
 		{
-			name: `vertical`,
-			line: Line{Point{0, 0}, Point{0, 300}},
-			p:    Point{0, 150},
-			want: true,
+			name:  `vertical`,
+			line:  Line{Point{0, 0}, Point{0, 300}},
+			point: Point{0, 150},
+			want:  true,
 		},
 		{
-			name: `diagonal ascending`,
-			line: Line{Point{0, 0}, Point{300, 300}},
-			p:    Point{150, 150},
-			want: true,
+			name:  `diagonal ascending`,
+			line:  Line{Point{0, 0}, Point{300, 300}},
+			point: Point{150, 150},
+			want:  true,
 		},
 		{
-			name: `diagonal descending`,
-			line: Line{Point{0, 300}, Point{300, 0}},
-			p:    Point{150, 150},
-			want: true,
+			name:  `diagonal descending`,
+			line:  Line{Point{0, 300}, Point{300, 0}},
+			point: Point{150, 150},
+			want:  true,
 		},
 		{
-			name: `diagonal reverse`,
-			line: Line{Point{300, 400}, Point{0, 0}},
-			p:    Point{600, 800},
-			want: true,
+			name:  `diagonal reverse`,
+			line:  Line{Point{300, 400}, Point{0, 0}},
+			point: Point{600, 800},
+			want:  true,
 		},
 		{
-			name: `false`,
-			line: Line{Point{0, 0}, Point{300, 300}},
-			p:    Point{150, 100},
-			want: false,
+			name:  `false`,
+			line:  Line{Point{0, 0}, Point{300, 300}},
+			point: Point{150, 100},
+			want:  false,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.IsPointOnLine(tc.p))
+			assert.Equal(t, tc.want, tc.line.IsPointOnLine(tc.point))
 		})
 	}
 }
 
 func TestLine_IsPointOnSegment(t *testing.T) {
 	tests := []struct {
-		name string
-		line Line
-		p    Point
-		want bool
+		name  string
+		line  Line
+		point Point
+		want  bool
 	}{
 		{
-			name: `horizontal out of bounds`,
-			line: Line{Point{0, 0}, Point{300, 0}},
-			p:    Point{450, 0},
-			want: false,
+			name:  `horizontal out of bounds`,
+			line:  Line{Point{0, 0}, Point{300, 0}},
+			point: Point{450, 0},
+			want:  false,
 		},
 		{
-			name: `vertical out of bounds`,
-			line: Line{Point{0, 0}, Point{0, 300}},
-			p:    Point{0, 450},
-			want: false,
+			name:  `vertical out of bounds`,
+			line:  Line{Point{0, 0}, Point{0, 300}},
+			point: Point{0, 450},
+			want:  false,
 		},
 		{
-			name: `diagonal ascending out of bounds`,
-			line: Line{Point{0, 0}, Point{300, 300}},
-			p:    Point{450, 450},
-			want: false,
+			name:  `diagonal ascending out of bounds`,
+			line:  Line{Point{0, 0}, Point{300, 300}},
+			point: Point{450, 450},
+			want:  false,
 		},
 		{
-			name: `diagonal descending out of bounds`,
-			line: Line{Point{0, 300}, Point{300, 0}},
-			p:    Point{450, 450},
-			want: false,
+			name:  `diagonal descending out of bounds`,
+			line:  Line{Point{0, 300}, Point{300, 0}},
+			point: Point{450, 450},
+			want:  false,
 		},
 		{
-			name: `false in bounds`,
-			line: Line{Point{0, 0}, Point{300, 300}},
-			p:    Point{150, 250},
-			want: false,
+			name:  `false in bounds`,
+			line:  Line{Point{0, 0}, Point{300, 300}},
+			point: Point{150, 250},
+			want:  false,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.line.IsPointOnSegment(tc.p))
+			assert.Equal(t, tc.want, tc.line.IsPointOnSegment(tc.point))
+		})
+	}
+}
+
+func TestLine_ClosestPointToLine(t *testing.T) {
+	tests := []struct {
+		name  string
+		line  Line
+		point Point
+		want  Point
+	}{
+		{
+			name:  `horizontal`,
+			line:  Line{Point{0, 0}, Point{300, 0}},
+			point: Point{400, 100},
+			want:  Point{400, 0},
+		},
+		{
+			name:  `vertical`,
+			line:  Line{Point{0, 0}, Point{0, 300}},
+			point: Point{100, 400},
+			want:  Point{0, 400},
+		},
+		{
+			name:  `diagonal`,
+			line:  Line{Point{0, 0}, Point{100, 50}},
+			point: Point{400, 0},
+			want:  Point{320, 160},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.want, tc.line.ClosestPointToLine(tc.point))
+		})
+	}
+}
+
+func TestLine_ClosestPointToSegment(t *testing.T) {
+	tests := []struct {
+		name  string
+		line  Line
+		point Point
+		want  Point
+	}{
+		{
+			name:  `horizontal`,
+			line:  Line{Point{0, 0}, Point{300, 0}},
+			point: Point{400, 100},
+			want:  Point{300, 0},
+		},
+		{
+			name:  `vertical`,
+			line:  Line{Point{0, 0}, Point{0, 300}},
+			point: Point{100, 400},
+			want:  Point{0, 300},
+		},
+		{
+			name:  `diagonal`,
+			line:  Line{Point{0, 0}, Point{100, 50}},
+			point: Point{400, 0},
+			want:  Point{100, 50},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.want, tc.line.ClosestPointToSegment(tc.point))
 		})
 	}
 }
@@ -595,6 +666,42 @@ func TestNewLine(t *testing.T) {
 }
 
 // Benchmarks
+
+var (
+	GlobalLine Line
+)
+
+func BenchmarkIsPointOnLine(b *testing.B) {
+	r := false
+	line := Line{Point{0, 0}, Point{300, 300}}
+	point := Point{150, 150}
+	for i := 0; i < b.N; i++ {
+		r = isPointOnLine(line, point, true)
+	}
+	GlobalB = r
+}
+
+func BenchmarkClosestPoint(b *testing.B) {
+	t := Point{100, 100}
+	p := Point{}
+	ln := Line{Point{0, 0}, Point{300, 400}}
+	for i := 0; i < b.N; i++ {
+		p = closestPoint(ln, t, true)
+	}
+	GlobalPoint = p
+}
+
+func BenchmarkLinesIntersection(b *testing.B) {
+	p := Point{}
+	r := false
+	al := Line{Point{0, 0}, Point{300, 400}}
+	bl := Line{Point{0, 400}, Point{300, 0}}
+	for i := 0; i < b.N; i++ {
+		p, r = linesIntersection(al, bl, true, true)
+	}
+	GlobalPoint = p
+	GlobalB = r
+}
 
 func BenchmarkLine_IsCollision(b *testing.B) {
 	r := false

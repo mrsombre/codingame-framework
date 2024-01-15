@@ -2,9 +2,7 @@
 
 [![codecov](https://codecov.io/gh/mrsombre/codingame-framework/graph/badge.svg?token=I8RYIUSN6Q)](https://codecov.io/gh/mrsombre/codingame-framework)
 
-A set of algorithms and data structures for solving puzzles.
-
-Feel free to follow me on [Codingame Profile](https://www.codingame.com/profile/9dd9f9f38412d78eaf21718bf6e87ca0626964).
+A collection of algorithms and data structures designed for solving programming puzzles.
 
 ### Golang Version
 
@@ -21,3 +19,6 @@ go test -cover ./...
 ```shell
 go test -bench=. -benchmem -run=^$ > bench.out
 ```
+
+---
+You are welcome to follow my [Codingame profile](https://www.codingame.com/profile/9dd9f9f38412d78eaf21718bf6e87ca0626964)
