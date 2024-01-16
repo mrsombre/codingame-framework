@@ -17,44 +17,44 @@ func TestPoint_IsSame(t *testing.T) {
 func TestPoint_Index(t *testing.T) {
 	tests := []struct {
 		name  string
-		p     Point
-		width int
+		point Point
+		width float64
 		want  int
 		panic bool
 	}{
 		{
 			name:  `first`,
-			p:     Point{0, 0},
+			point: Point{0, 0},
 			width: 10,
 			want:  0,
 		},
 		{
 			name:  `last in row`,
-			p:     Point{9, 0},
+			point: Point{9, 0},
 			width: 10,
 			want:  9,
 		},
 		{
 			name:  `next row`,
-			p:     Point{0, 1},
+			point: Point{0, 1},
 			width: 10,
 			want:  10,
 		},
 		{
 			name:  `next column`,
-			p:     Point{1, 0},
+			point: Point{1, 0},
 			width: 10,
 			want:  1,
 		},
 		{
 			name:  `last`,
-			p:     Point{9, 9},
+			point: Point{9, 9},
 			width: 10,
 			want:  99,
 		},
 		{
 			name:  `out of bound`,
-			p:     Point{10, 0},
+			point: Point{10, 0},
 			width: 10,
 			panic: true,
 		},
@@ -63,12 +63,20 @@ func TestPoint_Index(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			if tc.panic {
-				assert.Panics(t, func() { tc.p.Index(tc.width) })
+				assert.Panics(t, func() { tc.point.Index(tc.width) })
 				return
 			}
-			assert.Equal(t, tc.want, tc.p.Index(tc.width))
+			assert.Equal(t, tc.want, tc.point.Index(tc.width))
 		})
 	}
+}
+
+func TestPoint_IsInXRange(t *testing.T) {
+	var p Point
+	p = Point{200, 100}
+	assert.True(t, p.IsInXRange(100, 300))
+	p = Point{200, 100}
+	assert.False(t, p.IsInXRange(300, 500))
 }
 
 func TestPoint_IsInXBound(t *testing.T) {
@@ -79,12 +87,30 @@ func TestPoint_IsInXBound(t *testing.T) {
 	assert.False(t, p.IsInXBound(100))
 }
 
+func TestPoint_IsInYRange(t *testing.T) {
+	var p Point
+	p = Point{100, 200}
+	assert.True(t, p.IsInYRange(100, 300))
+	p = Point{100, 200}
+	assert.False(t, p.IsInYRange(300, 500))
+}
+
 func TestPoint_IsInYBound(t *testing.T) {
 	var p Point
 	p = Point{100, 200}
 	assert.True(t, p.IsInYBound(1000))
 	p = Point{100, 200}
 	assert.False(t, p.IsInYBound(100))
+}
+
+func TestPoint_IsInRange(t *testing.T) {
+	var p Point
+	p = Point{200, 100}
+	assert.True(t, p.IsInRange(100, 300))
+	p = Point{200, 100}
+	assert.False(t, p.IsInRange(300, 500))
+	p = Point{100, 200}
+	assert.False(t, p.IsInRange(300, 500))
 }
 
 func TestPoint_IsInBound(t *testing.T) {
@@ -289,3 +315,9 @@ func TestNewPoint(t *testing.T) {
 		})
 	}
 }
+
+// Benchmarks
+
+var (
+	GlobalPoint Point
+)

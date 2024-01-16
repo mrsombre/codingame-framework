@@ -38,6 +38,7 @@ func (r Rect) Center() Point {
 	)
 }
 
+// Symmetric returns the symmetric Rect according to the given width and height.
 func (r Rect) Symmetric(width, height float64) Rect {
 	return Rect{
 		Xf: width - r.Xf,
@@ -48,8 +49,8 @@ func (r Rect) Symmetric(width, height float64) Rect {
 }
 
 // IsContainsPoint tests if the Rect contains the Point.
-func (r Rect) IsContainsPoint(c Point) bool {
-	return c.X >= r.Xf && c.X <= r.Xt && c.Y >= r.Yf && c.Y <= r.Yt
+func (r Rect) IsContainsPoint(t Point) bool {
+	return t.X >= r.Xf && t.X <= r.Xt && t.Y >= r.Yf && t.Y <= r.Yt
 }
 
 // IsContainsRectangle tests if the Rect contains the other Rect.
@@ -81,6 +82,7 @@ func (r Rect) RectsIntersection(t Rect) (Rect, bool) {
 	return ir, true
 }
 
+// Vertices returns the Points vertices of the Rect.
 func (r Rect) Vertices() Points {
 	return Points{
 		topLeft0:     {r.Xf, r.Yt},
