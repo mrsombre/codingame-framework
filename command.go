@@ -27,6 +27,6 @@ func (c MockCommand) String() string {
 
 func ExecuteCommands(commands Commands) {
 	for _, command := range commands {
-		fmt.Fprintln(commandOutput, command)
+		_, _ = fmt.Fprintln(commandOutput, command)
 	}
 }

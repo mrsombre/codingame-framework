@@ -1,21 +1,10 @@
 package main
 
+// Example of how to read input data into game business objects.
+
 import (
 	"fmt"
 )
-
-type Unit struct {
-	x, y, z float64
-}
-
-type Turn struct {
-	Power float64
-	L, R  string
-}
-
-type Game struct {
-	Units []Unit
-}
 
 func InputGame(data []string) Game {
 	var err error
@@ -25,17 +14,16 @@ func InputGame(data []string) Game {
 	size = StrToInt(data[0])
 	data = data[1:]
 	var unit Unit
-	units := make([]Unit, 0, size)
+	game.Units = make([]Unit, 0, size)
 	for i := 0; i < size; i++ {
 		_, err = fmt.Sscan(data[i], &unit.x, &unit.y, &unit.z)
 		if err != nil {
 			panic(err)
 		}
-		units = append(units, unit)
+		game.Units = append(game.Units, unit)
 	}
 
 	// some additional logic
-	game.Units = units
 
 	return game
 }
