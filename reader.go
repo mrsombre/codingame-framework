@@ -1,10 +1,10 @@
 package main
 
+// Example of reading game state from the standard input stream.
+
 import (
 	"bufio"
 )
-
-// Reading the game state from the standard input stream.
 
 // ReadGame reads the game state from the standard input stream.
 func ReadGame(s *bufio.Scanner) []string {

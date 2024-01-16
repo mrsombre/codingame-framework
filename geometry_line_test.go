@@ -290,7 +290,13 @@ func TestLine_ClosestPointToLine(t *testing.T) {
 			want:  Point{0, 400},
 		},
 		{
-			name:  `diagonal`,
+			name:  `diagonal from`,
+			line:  Line{Point{150, 150}, Point{250, 300}},
+			point: Point{50, 50},
+			want:  Point{73, 35},
+		},
+		{
+			name:  `diagonal to`,
 			line:  Line{Point{0, 0}, Point{100, 50}},
 			point: Point{400, 0},
 			want:  Point{320, 160},
@@ -324,7 +330,13 @@ func TestLine_ClosestPointToSegment(t *testing.T) {
 			want:  Point{0, 300},
 		},
 		{
-			name:  `diagonal`,
+			name:  `diagonal from`,
+			line:  Line{Point{150, 150}, Point{250, 300}},
+			point: Point{50, 50},
+			want:  Point{150, 150},
+		},
+		{
+			name:  `diagonal to`,
 			line:  Line{Point{0, 0}, Point{100, 50}},
 			point: Point{400, 0},
 			want:  Point{100, 50},

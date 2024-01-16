@@ -24,6 +24,8 @@ func TestStrToInt(t *testing.T) {
 	assert.Equal(t, -1, StrToInt(s))
 	s = "0"
 	assert.Equal(t, 0, StrToInt(s))
+	s = "a"
+	assert.Panics(t, func() { StrToInt(s) })
 }
 
 func TestBoolToInt(t *testing.T) {

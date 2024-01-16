@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type mockWriter struct {
+type commandMockWriter struct {
 	data []byte
 }
 
-func (w *mockWriter) Write(p []byte) (n int, err error) {
+func (w *commandMockWriter) Write(p []byte) (n int, err error) {
 	w.data = p
 	return len(p), nil
 }
@@ -21,10 +21,10 @@ func TestMockCommand_String(t *testing.T) {
 }
 
 func TestExecuteCommand(t *testing.T) {
-	commandOutput = &mockWriter{}
+	commandOutput = &commandMockWriter{}
 	ExecuteCommands(Commands{MockCommand{1, 2}})
 
 	want := "1 2\n"
-	got := commandOutput.(*mockWriter).data
+	got := commandOutput.(*commandMockWriter).data
 	assert.Equal(t, want, string(got))
 }

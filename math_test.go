@@ -10,8 +10,12 @@ func TestMedian(t *testing.T) {
 	values := []float64{
 		0, 2, 4, 6, 8, 10, 1000,
 	}
-
 	assert.EqualValues(t, 6, Median(values))
+
+	values = []float64{
+		0, 2, 4, 6, 8, 10,
+	}
+	assert.EqualValues(t, 5, Median(values))
 }
 
 func TestExpectedExpDiff(t *testing.T) {
