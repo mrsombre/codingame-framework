@@ -1,5 +1,7 @@
 package main
 
+// Example main: Read game state, construct business objects, apply logic, and execute commands.
+
 import (
 	"bufio"
 	"math/rand"
@@ -17,7 +19,6 @@ func init() {
 }
 
 func main() {
-	// example
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Buffer(make([]byte, 1000000), 1000000)
 
@@ -39,5 +40,10 @@ func main() {
 
 		// some game logic for the next step
 		u(game, step)
+
+		commands := Commands{
+			MockCommand{1, 2},
+		}
+		ExecuteCommands(commands)
 	}
 }

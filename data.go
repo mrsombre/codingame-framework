@@ -14,21 +14,11 @@ import (
 // DataExport serializes and compresses a slice of strings,
 // returning a base64 encoded string.
 func DataExport(data []string) string {
-	var err error
-
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-
+	jsonData, _ := json.Marshal(data)
 	var gzBuf bytes.Buffer
 	gz := gzip.NewWriter(&gzBuf)
-	if _, err = gz.Write(jsonData); err != nil {
-		panic(err)
-	}
-	if err = gz.Close(); err != nil {
-		panic(err)
-	}
+	_, _ = gz.Write(jsonData)
+	_ = gz.Close()
 
 	return base64.StdEncoding.EncodeToString(gzBuf.Bytes())
 }
@@ -36,33 +26,13 @@ func DataExport(data []string) string {
 // DataImport decodes a base64 string, decompresses it,
 // and deserializes the JSON data into a slice of strings.
 func DataImport(encodedData string) []string {
-	var err error
-
-	gzData, err := base64.StdEncoding.DecodeString(encodedData)
-	if err != nil {
-		panic(err)
-	}
-
-	gz, err := gzip.NewReader(bytes.NewBuffer(gzData))
-	if err != nil {
-		panic(err)
-	}
-	defer func(gz *gzip.Reader) {
-		err = gz.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(gz)
-
+	gzData, _ := base64.StdEncoding.DecodeString(encodedData)
+	gz, _ := gzip.NewReader(bytes.NewBuffer(gzData))
+	_ = gz.Close()
 	var jsonData bytes.Buffer
-	if _, err = jsonData.ReadFrom(gz); err != nil {
-		panic(err)
-	}
-
+	_, _ = jsonData.ReadFrom(gz)
 	var data []string
-	if err = json.Unmarshal(jsonData.Bytes(), &data); err != nil {
-		panic(err)
-	}
+	_ = json.Unmarshal(jsonData.Bytes(), &data)
 
 	return data
 }

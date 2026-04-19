@@ -16,6 +16,12 @@ func TestInputGame(t *testing.T) {
 		},
 	}
 	assert.Equal(t, want, game)
+
+	data := []string{
+		"1",
+		"1 2 a",
+	}
+	assert.Panics(t, func() { InputGame(data) })
 }
 
 func TestInputStep(t *testing.T) {
@@ -26,4 +32,9 @@ func TestInputStep(t *testing.T) {
 		R:     "L",
 	}
 	assert.Equal(t, want, turn)
+
+	data := []string{
+		"a a a",
+	}
+	assert.Panics(t, func() { InputStep(data) })
 }
